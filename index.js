@@ -81,7 +81,8 @@ const init = () => {
             //// function to add the department to the department table
             console.log(response.department); //// remove this when function is added
             // console.log statement
-            console.log('You have successfully added a new department')
+            const lowercaseRes = response.department.toLowerCase();
+            console.log(`You have successfully added ${lowercaseRes} to your department table`)
             // return to the start
             init();
         });
@@ -113,7 +114,8 @@ const init = () => {
             //// function to select which department this role belongs to and update the department table
             console.log(response.roleDepartment); //// remove this when function is added
             // console.log statement
-            console.log('You have successfully added a new role')
+            const lowercaseRes = response.roleName.toLowerCase();
+            console.log(`You have successfully added ${lowercaseRes} to the role table`)
             // return to the start
             init();
         });
@@ -153,7 +155,7 @@ const init = () => {
             //// function to add the employee's manager to the employee table
             console.log(response.employeeManager); //// remove this when function is added
             // console.log statement
-            console.log('You have successfully added a new employee')
+            console.log(`You have successfully added ${response.employeeFirst} ${response.employeeLast} to the employee table`)
             // return to the start
             init();
         });
