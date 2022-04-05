@@ -80,6 +80,8 @@ const init = () => {
         ]).then((response) => {
             //// function to add the department to the department table
             console.log(response.department); //// remove this when function is added
+            // console.log statement
+            console.log('You have successfully added a new department')
             // return to the start
             init();
         });
@@ -109,7 +111,9 @@ const init = () => {
             //// function to add the salary to the roles table
             console.log(response.roleSalary); //// remove this when function is added
             //// function to select which department this role belongs to and update the department table
-            console.log(response.roleSalary); //// remove this when function is added
+            console.log(response.roleDepartment); //// remove this when function is added
+            // console.log statement
+            console.log('You have successfully added a new role')
             // return to the start
             init();
         });
@@ -148,6 +152,8 @@ const init = () => {
             console.log(response.employeeRole); //// remove this when function is added
             //// function to add the employee's manager to the employee table
             console.log(response.employeeManager); //// remove this when function is added
+            // console.log statement
+            console.log('You have successfully added a new employee')
             // return to the start
             init();
         });
@@ -172,6 +178,8 @@ const init = () => {
             console.log(response.whichEmployee); //// remove this when function is added
             //// function to update the employee's role in the employee table
             console.log(response.whichRole); //// remove this when function is added
+            // console.log statement
+            console.log(`You have successfully updated ${response.whichEmployee}'s role`)
             // return to the start
             init();
         });
