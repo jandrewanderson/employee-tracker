@@ -64,6 +64,7 @@ const init = () => {
             console.log(response.department);
         });
     }
+    // function to add role
     const addRole = () => {
         inquirer.prompt([
             {
@@ -105,8 +106,7 @@ const init = () => {
                 type: "input", ////change to list later
                 name: "employeeManager",
                 message: "Who is the employee's manager?" ////change this to pull from the employee table
-            },
-            
+            }, 
         ]).then((response) => {
             //// function to add the employee first name to the employee table
             console.log(response.employeeFirst);
@@ -131,7 +131,6 @@ const init = () => {
                 name: "whichRole",
                 message: "Which role do you want to assign the selected employee??" ////change this to pull from the role table
             },
-            
         ]).then((response) => {
             //// function to select the employee that will be updated
             console.log(response.whichEmployee);
@@ -139,7 +138,6 @@ const init = () => {
             console.log(response.whichRole);
         });
     }
-
 
 init();
 
