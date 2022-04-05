@@ -12,18 +12,19 @@ const init = () => {
             name: 'options',
             message: 'What would you like to do?',
             choices: [
-                'view all departments', 'view all roles', 'view all employees', 'add a department', 'add a role', 'add an employee', 'update an employee role'
+                'view all departments', 'view all roles', 'view all employees', 'add a department', 'add a role', 'add an employee', 'update an employee role', 'exit'
             ]
         },
-
-        
     ]).then((response) => {
         if (response.options === 'view all departments') {
-            //// call function to show department table
+            // call function to show department table
+            disDepartments();
         }else if (response.options === 'view all roles'){
-            //// call function to show role table
+            // function to show role table
+            disRoles();
         }else if (response.options === 'view all employees'){
-            //// call function to show employee table
+            // function to show employee table
+            disEmployees();
         }else if (response.options === 'add a department'){
             // function to add a department
             addDepartment();
@@ -37,17 +38,34 @@ const init = () => {
             // function to update an employee role
             updateEmpRole();
         }else {
-            console.log('Sorry this is an invalid response. Try again!');
+            endPrompt();
         }
     })
-
 }
 
 
 // functions to show tables of information
     // function for displaying all departments
+    const disDepartments = () => {
+        //// function to display the departments table
+        console.log('Department Table'); //// remove this when function is added
+        // return to the start
+        init();
+    }
     // function for displaying all roles
+    const disRoles = () => {
+        //// function to display the roles table
+        console.log('Roles Table'); //// remove this when function is added
+        // return to the start
+        init();
+    }
     // function for displaying all employees
+    const disEmployees = () => {
+        //// function to display the employee table
+        console.log('Employee Table'); //// remove this when function is added
+        // return to the start
+        init();
+    }
         
 
 //functions to change tables
@@ -61,7 +79,9 @@ const init = () => {
             }
         ]).then((response) => {
             //// function to add the department to the department table
-            console.log(response.department);
+            console.log(response.department); //// remove this when function is added
+            // return to the start
+            init();
         });
     }
     // function to add role
@@ -77,11 +97,21 @@ const init = () => {
                 name: 'roleSalary',
                 message: 'What is the salary of the role?'
             },
+            {
+                type: 'input', //// change to list later
+                name: 'roleDepartment',
+                message: 'Which department does this role belong to?'
+                //// change this to pull from the employee table
+            },
         ]).then((response) => {
             //// function to add the role to the roles table
-            console.log(response.roleName);
+            console.log(response.roleName); //// remove this when function is added
             //// function to add the salary to the roles table
-            console.log(response.roleSalary);
+            console.log(response.roleSalary); //// remove this when function is added
+            //// function to select which department this role belongs to and update the department table
+            console.log(response.roleSalary); //// remove this when function is added
+            // return to the start
+            init();
         });
     }
     // function for adding an employee
@@ -98,51 +128,61 @@ const init = () => {
                 message: "What is the employee's last name?"
             },
             {
-                type: "input", ////change to list later
+                type: "input", //// change to list later
                 name: "employeeRole",
-                message: "What is the employee's role?" ////change this to pull from the role table
+                message: "What is the employee's role?" 
+                //// change this to pull from the role table
             },
             {
                 type: "input", ////change to list later
                 name: "employeeManager",
-                message: "Who is the employee's manager?" ////change this to pull from the employee table
+                message: "Who is the employee's manager?" 
+                //// change this to pull from the employee table
             }, 
         ]).then((response) => {
             //// function to add the employee first name to the employee table
-            console.log(response.employeeFirst);
+            console.log(response.employeeFirst); //// remove this when function is added
             //// function to add the employee last name to the employee table
-            console.log(response.employeeLast);
+            console.log(response.employeeLast); //// remove this when function is added
             //// function to add the employee role to the employee table
-            console.log(response.employeeRole);
+            console.log(response.employeeRole); //// remove this when function is added
             //// function to add the employee's manager to the employee table
-            console.log(response.employeeManager);
+            console.log(response.employeeManager); //// remove this when function is added
+            // return to the start
+            init();
         });
     }
     // function for updating an employee role
     const updateEmpRole = () => {
         inquirer.prompt([
             {
-                type: "input", ////change to list later
+                type: "input", //// change to list later
                 name: "whichEmployee",
-                message: "Which employee's role do you want to update?" ////change this to pull from the role table
+                message: "Which employee's role do you want to update?" 
+                ////change this to pull from the role table
             },
             {
-                type: "input", ////change to list later
+                type: "input", //// change to list later
                 name: "whichRole",
-                message: "Which role do you want to assign the selected employee??" ////change this to pull from the role table
+                message: "Which role do you want to assign the selected employee??" 
+                //// change this to pull from the role table
             },
         ]).then((response) => {
             //// function to select the employee that will be updated
-            console.log(response.whichEmployee);
+            console.log(response.whichEmployee); //// remove this when function is added
             //// function to update the employee's role in the employee table
-            console.log(response.whichRole);
+            console.log(response.whichRole); //// remove this when function is added
+            // return to the start
+            init();
         });
     }
 
+
+// function to end prompt line
+const endPrompt = () => {
+    console.log('You have ended the program!');
+}
 init();
-
-
-
 
 
 // MAYBE ADD THIS IN LATER?
