@@ -12,8 +12,6 @@ const db = mysql.createConnection(
     console.log('You are connected to the employee_tracker database.')
 );
 
-//// = TODO:
-
 // function that displays style console.log and starts the questions
 function init() {
     console.log('\n');
@@ -23,8 +21,6 @@ function init() {
     console.log('\n');
     firstPrompt();
 }
-  
-
 
 // function that starts the command line prompt and will help navigate to the next prompt
 const firstPrompt = () => { 
@@ -65,8 +61,8 @@ const firstPrompt = () => {
     })
 }
 
-
 // functions to show tables of information
+
     // function for displaying all departments
     const disDepartments = () => {
         // function to display the departments table
@@ -85,6 +81,7 @@ const firstPrompt = () => {
             firstPrompt();
         });
     }
+
     // function for displaying all roles
     const disRoles = () => {
         // function to display the roles table
@@ -103,6 +100,7 @@ const firstPrompt = () => {
             firstPrompt();
         });
     }
+
     // function for displaying all employees
     const disEmployees = () => {
         // function to display the employee table
@@ -120,8 +118,9 @@ const firstPrompt = () => {
             // return to the start
             firstPrompt();
         });
-    }
-        
+    } 
+
+
 
 //functions to change tables
     // function for adding department
@@ -147,6 +146,7 @@ const firstPrompt = () => {
             })
         });
     }
+
     // function to add role
     const addRole = async () => {
         const result = await inquirer.prompt([
@@ -175,7 +175,6 @@ const firstPrompt = () => {
         ])
         const query = 'INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)';
         db.query(query, [result.roleName, result.roleSalary, whichDep.roleDepartment], (err, results) => {
-    
             try{
                 // const lowercaseRes = result.title.toLowerCase();
                 console.log(`You have successfully added ${result.roleName} to your role table`)
@@ -186,72 +185,86 @@ const firstPrompt = () => {
             firstPrompt();
         })    
     }
-//     // function for adding an employee
-    const addEmployee = () => {
-        inquirer.prompt([
+
+    // function for adding an employee
+    async function addEmployee() {
+        const askEmp = await inquirer.prompt([
             {
                 type: "input",
                 name: "employeeFirst",
-                message: "What is the employee's first name?"
+                message: "What is the employee's first name?",
             },
             {
                 type: "input",
                 name: "employeeLast",
-                message: "What is the employee's last name?"
-            },
+                message: "What is the employee's last name?",
+            }
+        ])
+        const getRoles = await db.promise().query('SELECT * FROM roles');
+        const roles = getRoles[0].map(({ id, title }) => ({ value: id, name: title }));
+        const askRole = await inquirer.prompt([
             {
-                type: "input", //// change to list later
-                name: "employeeRole",
-                message: "What is the employee's role?" 
-                //// change this to pull from the role table
-            },
+                type: 'list',
+                name: 'employeeRole',
+                message: "What is the employee's role?",
+                choices: roles
+            }
+        ])
+        const getEmployees = await db.promise().query('SELECT * FROM employees');
+        const employees = getEmployees[0].map(({ first_name, last_name, manager_id }) => ({ value: manager_id, name: `${first_name} ${last_name}` }));
+        employees.push({value: null, name: 'None'});
+        const getManager = await inquirer.prompt([
             {
-                type: "input", ////change to list later
-                name: "employeeManager",
-                message: "Who is the employee's manager?" 
-                //// change this to pull from the employee table
-            }, 
-        ]).then((response) => {
-            //// function to add the employee first name to the employee table
-            console.log(response.employeeFirst); //// remove this when function is added
-            //// function to add the employee last name to the employee table
-            console.log(response.employeeLast); //// remove this when function is added
-            //// function to add the employee role to the employee table
-            console.log(response.employeeRole); //// remove this when function is added
-            //// function to add the employee's manager to the employee table
-            console.log(response.employeeManager); //// remove this when function is added
-            // console.log statement
-            console.log(`You have successfully added ${response.employeeFirst} ${response.employeeLast} to the employee table`)
+                type: 'list',
+                name: 'employeeManager',
+                message: "Who is the employee's manager?",
+                choices: employees
+            }
+        ])
+        const query = 'INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)';
+        db.query(query, [askEmp.employeeFirst, askEmp.employeeLast, askRole.roles, getManager.employeeManager], (err, results) => {
+            try {
+                console.log(`Successfully added ${askEmp.employeeFirst} ${askEmp.employeeLast} to the employee table.`);
+            }catch {
+                console.log(err);
+            }
             // return to the start
             firstPrompt();
-        });
+        })
     }
+
     // function for updating an employee role
-    const updateEmpRole = () => {
-        inquirer.prompt([
+    async function updateEmpRole() {
+        const getEmployees = await db.promise().query('SELECT * FROM employees');
+        const employees = getEmployees[0].map(({ id, first_name, last_name }) => ({ value: id, name: `${first_name} ${last_name}` }));
+        const getRoles = await db.promise().query('SELECT * FROM roles');
+        const roles = getRoles[0].map(({ id, title }) => ({ value: id, name: title }));
+        const updEmp = await inquirer.prompt([
             {
-                type: "input", //// change to list later
-                name: "whichEmployee",
-                message: "Which employee's role do you want to update?" 
-                ////change this to pull from the role table
+                type: 'list',
+                name: 'whichEmployee',
+                message: "Which employee's role do you want to update?",
+                choices: employees
             },
             {
-                type: "input", //// change to list later
-                name: "whichRole",
-                message: "Which role do you want to assign the selected employee??" 
-                //// change this to pull from the role table
+                type: 'list',
+                name: 'whichRole',
+                message: "Which role do you want to assign the selected employee?",
+                choices: roles
             },
-        ]).then((response) => {
-            //// function to select the employee that will be updated
-            console.log(response.whichEmployee); //// remove this when function is added
-            //// function to update the employee's role in the employee table
-            console.log(response.whichRole); //// remove this when function is added
-            // console.log statement
-            console.log(`You have successfully updated ${response.whichEmployee}'s role`)
+        ])
+        const query = 'UPDATE employees SET role_id = ? WHERE id = ?';
+        db.query(query, [updEmp.role, updEmp.employee], (err, results) => {
+            try {
+                console.log(`You have successfully updated ${updEmp.whichEmployee}'s role`);
+            }catch{
+                console.log(err);
+            }
             // return to the start
             firstPrompt();
-        });
+        })
     }
+
 
 
 // function to end prompt line
@@ -259,22 +272,6 @@ const endPrompt = () => {
     console.log('You have ended the program!');
 }
 
+
+
 init();
-
-
-// MAYBE ADD THIS IN LATER?
-    // const confirmDepartment = (response) => {
-    //     inquirer.prompt([
-    //         {
-    //             type: 'confirm',
-    //             name: 'areYouSure',
-    //             message: 'Are you sure?',
-    //         }
-    //     ]).then((response1) => {
-    //         if(response1.areYouSure){
-    //             // function to add the department (response.department) from the last question to the table.
-    //             console.log(response.department);
-    //         }
-    //     });
-    // }
-    // function for adding a role
