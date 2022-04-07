@@ -1,11 +1,23 @@
 const inquirer = require('inquirer');
-const db = require('./db/connection');
 const table = require('console.table');
+const mysql = require('mysql2');
+// creating the connection to the mysql database
+const db = mysql.createConnection(
+    {
+        host: 'localhost',
+        user: 'root',
+        password: '1234',
+        database: 'employee_tracker'
+    },
+    console.log('You are connected to the employee_tracker database.')
+);
 
 //// = TODO:
 
+//// make init a function that displays style console.log
+
 // function that starts the command line prompt and will help navigate to the next prompt
-const init = () => {
+const firstPrompt = () => { 
     inquirer.prompt([
         {
             type: 'list',
@@ -17,7 +29,7 @@ const init = () => {
         },
     ]).then((response) => {
         if (response.options === 'view all departments') {
-            // call function to show department table
+            // function to show department table
             disDepartments();
         }else if (response.options === 'view all roles'){
             // function to show role table
@@ -47,24 +59,45 @@ const init = () => {
 // functions to show tables of information
     // function for displaying all departments
     const disDepartments = () => {
-        //// function to display the departments table
-        console.log('Department Table'); //// remove this when function is added
-        // return to the start
-        init();
+        // function to display the departments table
+        db.query('SELECT * FROM departments', function(err, results){
+            try {
+                console.log('Departments Table');
+                console.table(results);
+            } catch {
+                console.log(err);
+            }
+            // return to the start
+            firstPrompt();
+        });
     }
     // function for displaying all roles
     const disRoles = () => {
-        //// function to display the roles table
-        console.log('Roles Table'); //// remove this when function is added
-        // return to the start
-        init();
+        // function to display the roles table
+        db.query('SELECT * FROM roles', function(err, results){
+            try {
+                console.log('Roles Table');
+                console.table(results);
+            } catch {
+                console.log(err);
+            }
+            // return to the start
+            firstPrompt();
+        });
     }
     // function for displaying all employees
     const disEmployees = () => {
-        //// function to display the employee table
-        console.log('Employee Table'); //// remove this when function is added
-        // return to the start
-        init();
+        // function to display the employee table
+        db.query('SELECT * FROM employees', function(err, results){
+            try {
+                console.log('Employees Table');
+                console.table(results);
+            } catch {
+                console.log(err);
+            }
+            // return to the start
+            firstPrompt();
+        });
     }
         
 
@@ -78,17 +111,25 @@ const init = () => {
                 message: 'What is the name of the department?'
             }
         ]).then((response) => {
-            //// function to add the department to the department table
-            console.log(response.department); //// remove this when function is added
-            // console.log statement
-            const lowercaseRes = response.department.toLowerCase();
-            console.log(`You have successfully added ${lowercaseRes} to your department table`)
-            // return to the start
-            init();
+            // function to add the department to the department table
+            const query = 'INSERT INTO departments (name) VALUES (?)'
+            db.query(query, response.department, (err, results) => {
+                try{
+                    const lowercaseRes = response.department.toLowerCase();
+                    console.log(`You have successfully added ${lowercaseRes} to your department table`)
+                }catch {
+                    console.log(err);
+                }
+                // return to the start
+                firstPrompt();
+            })
         });
     }
     // function to add role
     const addRole = () => {
+        // const searchDep = db.query('SELECT * FROM departments');
+        // const depArray = searchDep[0].map(({ id, name }) => ({value: id, name: name}));
+        // console.log(depArray);
         inquirer.prompt([
             {
                 type: 'input',
@@ -117,7 +158,7 @@ const init = () => {
             const lowercaseRes = response.roleName.toLowerCase();
             console.log(`You have successfully added ${lowercaseRes} to the role table`)
             // return to the start
-            init();
+            firstPrompt();
         });
     }
     // function for adding an employee
@@ -157,7 +198,7 @@ const init = () => {
             // console.log statement
             console.log(`You have successfully added ${response.employeeFirst} ${response.employeeLast} to the employee table`)
             // return to the start
-            init();
+            firstPrompt();
         });
     }
     // function for updating an employee role
@@ -183,7 +224,7 @@ const init = () => {
             // console.log statement
             console.log(`You have successfully updated ${response.whichEmployee}'s role`)
             // return to the start
-            init();
+            firstPrompt();
         });
     }
 
@@ -192,7 +233,8 @@ const init = () => {
 const endPrompt = () => {
     console.log('You have ended the program!');
 }
-init();
+
+firstPrompt();
 
 
 // MAYBE ADD THIS IN LATER?
