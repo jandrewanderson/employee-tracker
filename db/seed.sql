@@ -1,3 +1,10 @@
+-- DROP TABLE IF EXISTS employees;
+-- DROP TABLE IF EXISTS roles;
+-- DROP TABLE IF EXISTS departments;
+
+
+
+
 INSERT INTO departments (name)
 VALUES
     ('Finance'),
@@ -5,7 +12,7 @@ VALUES
     ('Accounting'),
     ('Marketing');
 
-INSERT INTO roles (title, salary, deparment_id)
+INSERT INTO roles (title, salary, department_id)
 VALUES
     ('Finance Lead', 130000, 1),
     ('Finance Specialist', 100000, 1),

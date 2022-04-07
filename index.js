@@ -14,7 +14,17 @@ const db = mysql.createConnection(
 
 //// = TODO:
 
-//// make init a function that displays style console.log
+// function that displays style console.log and starts the questions
+function init() {
+    console.log('\n');
+    console.log('||=================================||');
+    console.log('||    EMPLOYEE TRACKER DATABASE    ||');
+    console.log('||=================================||');
+    console.log('\n');
+    firstPrompt();
+}
+  
+
 
 // function that starts the command line prompt and will help navigate to the next prompt
 const firstPrompt = () => { 
@@ -62,7 +72,11 @@ const firstPrompt = () => {
         // function to display the departments table
         db.query('SELECT * FROM departments', function(err, results){
             try {
-                console.log('Departments Table');
+                console.log('\n');
+                console.log('|=================|')
+                console.log('|Departments Table|');
+                console.log('|=================|')
+                console.log('\n');
                 console.table(results);
             } catch {
                 console.log(err);
@@ -76,7 +90,11 @@ const firstPrompt = () => {
         // function to display the roles table
         db.query('SELECT * FROM roles', function(err, results){
             try {
-                console.log('Roles Table');
+                console.log('\n');
+                console.log('|===========|')
+                console.log('|Roles Table|');
+                console.log('|===========|')
+                console.log('\n');
                 console.table(results);
             } catch {
                 console.log(err);
@@ -90,7 +108,11 @@ const firstPrompt = () => {
         // function to display the employee table
         db.query('SELECT * FROM employees', function(err, results){
             try {
-                console.log('Employees Table');
+                console.log('\n');
+                console.log('|===============|')
+                console.log('|Employees Table|');
+                console.log('|===============|')
+                console.log('\n');
                 console.table(results);
             } catch {
                 console.log(err);
@@ -126,42 +148,45 @@ const firstPrompt = () => {
         });
     }
     // function to add role
-    const addRole = () => {
-        // const searchDep = db.query('SELECT * FROM departments');
-        // const depArray = searchDep[0].map(({ id, name }) => ({value: id, name: name}));
-        // console.log(depArray);
-        inquirer.prompt([
+    const addRole = async () => {
+        const result = await inquirer.prompt([
             {
-                type: 'input',
-                name: 'roleName',
-                message: 'What is the name of the role?'
+                type: "input",
+                name: "roleName",
+                message: "What is the name of the role?",
             },
             {
-                type: 'input',
-                name: 'roleSalary',
-                message: 'What is the salary of the role?'
-            },
+                type: "input",
+                name: "roleSalary",
+                message: "What is the salary of the role?"
+            }
+        ]);
+        const getDep = 'SELECT * FROM departments'
+        const getResults = await db.promise().query(getDep);
+        const departments = getResults[0].map(({ id, name }) => ({value: id, name: name}));
+
+        const whichDep = await inquirer.prompt([
             {
-                type: 'input', //// change to list later
+                type: 'list',
                 name: 'roleDepartment',
-                message: 'Which department does this role belong to?'
-                //// change this to pull from the employee table
-            },
-        ]).then((response) => {
-            //// function to add the role to the roles table
-            console.log(response.roleName); //// remove this when function is added
-            //// function to add the salary to the roles table
-            console.log(response.roleSalary); //// remove this when function is added
-            //// function to select which department this role belongs to and update the department table
-            console.log(response.roleDepartment); //// remove this when function is added
-            // console.log statement
-            const lowercaseRes = response.roleName.toLowerCase();
-            console.log(`You have successfully added ${lowercaseRes} to the role table`)
+                message: "Which department does this role belong to?",
+                choices: departments
+            }
+        ])
+        const query = 'INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)';
+        db.query(query, [result.roleName, result.roleSalary, whichDep.roleDepartment], (err, results) => {
+    
+            try{
+                // const lowercaseRes = result.title.toLowerCase();
+                console.log(`You have successfully added ${result.roleName} to your role table`)
+            } catch {
+                console.log(err);
+            }
             // return to the start
             firstPrompt();
-        });
+        })    
     }
-    // function for adding an employee
+//     // function for adding an employee
     const addEmployee = () => {
         inquirer.prompt([
             {
@@ -234,7 +259,7 @@ const endPrompt = () => {
     console.log('You have ended the program!');
 }
 
-firstPrompt();
+init();
 
 
 // MAYBE ADD THIS IN LATER?
